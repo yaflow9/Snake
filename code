@@ -1,0 +1,90 @@
+<canvas id="gc" width="400" height="400"></canvas>
+<script>
+    window.onload = function() {
+        canv = document.getElementById("gc");
+        ctx = canv.getContext("2d");
+        document.addEventListener("keydown", keyPush);
+        setInterval(game, 1000 / 15);
+    }
+    XSnake = YSnake = 10;
+    Pixel = TailleMap = 20;
+    XApple = YApple = 15;
+    XVelocity = YVelocity = 0;
+    trail = [];
+    tail = 5;
+
+    function game() {
+        XSnake += XVelocity;
+        YSnake += YVelocity;
+        if (XSnake < 0) {
+            XSnake = TailleMap - 1;
+        }
+        if (XSnake > TailleMap - 1) {
+            XSnake = 0;
+        }
+        if (YSnake < 0) {
+            YSnake = TailleMap - 1;
+        }
+        if (YSnake > TailleMap - 1) {
+            YSnake = 0;
+        }
+        ctx.fillStyle = "green";
+        ctx.fillRect(0, 0, canv.width, canv.height);
+
+        ctx.fillStyle = "brown";
+        for (var i = 0; i < trail.length; i++) {
+            ctx.fillRect(trail[i].x * Pixel, trail[i].y * Pixel, Pixel - 2, Pixel - 2);
+            if (trail[i].x == XSnake && trail[i].y == YSnake) {
+                tail = 5;
+            }
+        }
+        trail.push({
+            x: XSnake,
+            y: YSnake
+        });
+        while (trail.length > tail) {
+            trail.shift();
+        }
+
+        if (XApple == XSnake && YApple == YSnake) {
+            tail++;
+            XApple = Math.floor(Math.random() * TailleMap);
+            YApple = Math.floor(Math.random() * TailleMap);
+        }
+        ctx.fillStyle = "red";
+        ctx.fillRect(XApple * Pixel, YApple * Pixel, Pixel - 2, Pixel - 2);
+    }
+
+    function keyPush(evt) {
+        switch (evt.keyCode) {
+            case 13:
+                alert("Pause, appuyez sur 'enter'");
+                break;
+            case 37:
+                if (XVelocity != 1) {
+                    XVelocity = -1;
+                    YVelocity = 0; //gauche
+                }
+                break;
+            case 38:
+                if (YVelocity != 1) {
+                    XVelocity = 0;
+                    YVelocity = -1; //haut
+                }
+                break;
+            case 39:
+                if (XVelocity != -1) {
+                    XVelocity = 1;
+                    YVelocity = 0; //droite
+                }
+                break;
+            case 40:
+                if (YVelocity != -1) {
+                    XVelocity = 0;
+                    YVelocity = 1; //bas
+                }
+                break;
+        }
+    }
+
+</script>
